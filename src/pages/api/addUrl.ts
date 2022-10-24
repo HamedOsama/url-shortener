@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import connect from '../../db/db';
-
+import { client, connectToRedis } from '../../db/redis';
 
 import Url from '../../models/url'
 
@@ -13,12 +13,29 @@ export default async function handler(
   try {
     if (req.method !== 'POST')
       throw new Error(`cannot ${req.method}`)
-    console.log('connecting to mongodb')
-    await connect()
-    console.log('adding')
-    const data = req.body;
-    const url = await Url.create(data);
-    // await url.save();
+    //connect to db
+    await connect();
+    if (!client.isReady)
+      await connectToRedis();
+    // get URL from request
+    const link = req.body.url;
+    // check if URL sent in request.
+    if (!link)
+      throw new Error('url field is required');
+    //check if url is already found
+    const checkUrl = await Url.findOne({ url: link });
+    if (checkUrl)
+      return res.status(200).json({
+        ok: true,
+        status: 200,
+        message: 'link already found',
+        url: checkUrl
+      })
+    //create new shorten url
+    const url = new Url({ url: link });
+    await client.set(url.key, url.url);
+
+    await url.save();
     res.status(201).json({
       ok: true,
       status: 201,
