@@ -1,0 +1,50 @@
+.layout {
+  height: 100vh;
+}
+
+.logo {
+  float: left;
+  width: 150px;
+  height: 40px;
+  margin: 1rem 0;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  color: #fff;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content .shorten {
+  width: 100%;
+  margin: 0 50px;
+  background-color: #ffffff;
+  padding: 1rem;
+  height: 100px;
+}
+
+.content .form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  height: 100%;
+}
+
+.content .form .formInput {
+  flex: 1;
+
+}
+
+.footer {
+  text-align: center;
+}
