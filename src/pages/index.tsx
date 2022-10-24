@@ -1,15 +1,21 @@
-import { Button } from 'antd'
-import Form from 'antd/lib/form'
-import Input from 'antd/lib/input'
-import Layout from 'antd/lib/layout'
+import { Button, Layout, Input, Form, Typography, Alert } from 'antd'
+// import Form from 'antd/lib/form'
+// import Input from 'antd/lib/input'
+// import {  } from 'antd'
 import { Content, Footer, Header } from 'antd/lib/layout/layout'
 import Space from 'antd/lib/space'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useState } from 'react'
 import styles from '../styles/Home.module.css'
 
+const { Title } = Typography;
 const Home: NextPage = (pp) => {
+  const [error, setError] = useState<true | false>(false);
+  const handleWrongOnSubmit = () => {
+    setError(prev => true);
+  }
   console.log(pp)
   return (
     <Layout className={styles.layout}>
@@ -25,17 +31,20 @@ const Home: NextPage = (pp) => {
       </Header>
       <Content className={styles.content}>
         <div className={styles.shorten}>
+          <Title level={5}>Enter your URL</Title>
           <Form
             name='customized_form_controls'
             style={{ height: '100%' }}
+            onFinishFailed={handleWrongOnSubmit}
           >
             <div className={styles.form}>
               <div className={styles.formInput}>
                 <Form.Item
                   name="url"
                   rules={[{ required: true }
-                    , { type: 'url', warningOnly: true, message: 'Please enter valid url' },
-                  { type: 'string', min: 6 },]}
+                    , { type: 'url', message: 'Please enter valid url' },
+                    // { type: 'string', min: 6 },
+                  ]}
                 >
                   <Input
                     placeholder="Shorten your link"
@@ -52,7 +61,14 @@ const Home: NextPage = (pp) => {
               </div>
             </div>
           </Form>
-          {/* <Button type='primary'>Shorten</Button> */}
+          {
+            error ?
+              <Alert
+                message="Please enter valid url"
+                type="error"
+                showIcon
+              /> : null
+          }
         </div>
       </Content>
       <Footer className={styles.footer}>
