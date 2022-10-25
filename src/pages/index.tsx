@@ -106,9 +106,11 @@ const Home: NextPage = () => {
             status === 'error' ||
               status === 'success' ?
               <Alert
-                message={message}
                 type={status}
                 showIcon
+                action={
+                  <a href={message} target="_blank" rel="noreferrer">{message}</a>
+                }
               /> : null
           }
         </div>
