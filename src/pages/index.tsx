@@ -4,6 +4,7 @@ import { Button, Layout, Input, Form, Typography, Alert } from 'antd'
 // import {  } from 'antd'
 import { Content, Footer, Header } from 'antd/lib/layout/layout'
 import Space from 'antd/lib/space'
+import axios, { AxiosError } from 'axios'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -11,12 +12,46 @@ import { useState } from 'react'
 import styles from '../styles/Home.module.css'
 
 const { Title } = Typography;
-const Home: NextPage = (pp) => {
-  const [error, setError] = useState<true | false>(false);
+type LinkType = {
+  link: string,
+}
+type ResponseError = {
+  ok: boolean,
+  status: number,
+  message: string | any
+}
+const Home: NextPage = () => {
+  const [status, setStatus] = useState<'error' | 'success' | 'initial'>('initial');
+  const [message, setMessage] = useState<string>('');
+  const [form] = Form.useForm();
+  // const url = Form.useWatch('url', form);
+
   const handleWrongOnSubmit = () => {
-    setError(prev => true);
+    setStatus(prev => 'error');
+    setMessage(prev => form.getFieldError('url').join(' '))
+    // console.log(form.getFieldError('url').join(' '))
   }
-  console.log(pp)
+
+  const submitHandler = async (Link: LinkType) => {
+    try {
+      const req = await axios.post('/api/addUrl', {
+        ...Link
+      })
+      setStatus(prev => 'success');
+      setMessage(prev => 'http://localhost:3000/' + req?.data?.url?.key)
+    } catch (e: any) {
+      const error = e as AxiosError<ResponseError>
+      setStatus(prev => 'error');
+      setMessage(error?.response?.data?.message || 'internal error')
+    }
+  }
+
+  // const trace = (e: any) => {
+  //   console.log(url)
+  //   console.log(form.getFieldError('url').join(''))
+  //   console.log(e.target.value)
+  //   console.log(form.getFieldValue('url'))
+  // }
   return (
     <Layout className={styles.layout}>
       <Head>
@@ -33,13 +68,18 @@ const Home: NextPage = (pp) => {
         <div className={styles.shorten}>
           <Title level={5}>Enter your URL</Title>
           <Form
-            name='customized_form_controls'
-            style={{ height: '100%' }}
+            // name='url'
+            form={form}
+            // style={{ height: '100%' }}
             onFinishFailed={handleWrongOnSubmit}
+            onFinish={submitHandler}
+          // onChangeCapture={trace}
+          // onChange={trace}
           >
             <div className={styles.form}>
               <div className={styles.formInput}>
                 <Form.Item
+                  noStyle
                   name="url"
                   rules={[{ required: true }
                     , { type: 'url', message: 'Please enter valid url' },
@@ -49,6 +89,7 @@ const Home: NextPage = (pp) => {
                   <Input
                     placeholder="Shorten your link"
                     size="large"
+                  // inputMode='url'
                   />
                 </Form.Item>
               </div>
@@ -62,10 +103,11 @@ const Home: NextPage = (pp) => {
             </div>
           </Form>
           {
-            error ?
+            status === 'error' ||
+              status === 'success' ?
               <Alert
-                message="Please enter valid url"
-                type="error"
+                message={message}
+                type={status}
                 showIcon
               /> : null
           }
