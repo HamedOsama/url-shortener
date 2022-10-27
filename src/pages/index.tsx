@@ -1,4 +1,4 @@
-import { Button, Layout, Input, Form, Typography, Alert } from 'antd'
+import { Button, Layout, Input, Form, Typography, Alert, Skeleton } from 'antd'
 // import Form from 'antd/lib/form'
 // import Input from 'antd/lib/input'
 // import {  } from 'antd'
@@ -102,13 +102,27 @@ const Home: NextPage = () => {
               </div>
             </div>
           </Form>
+          <div>
+            <Space>
+              <Skeleton.Avatar style={{ width: '50px', height: '50px' }} />
+              <Skeleton.Button style={{ width: '150px' }} />
+              <Skeleton.Button shape="circle" />
+              <Skeleton.Button />
+            </Space>
+            <Space style={{ display: 'block', margin: "1rem 0" }}>
+              <Skeleton
+                title={false}
+                paragraph={{ rows: 1 }}
+              />
+            </Space>
+          </div>
           {
             status === 'error' ||
               status === 'success' ?
               <Alert
                 type={status}
                 showIcon
-                action={
+                description={
                   <a href={message} target="_blank" rel="noreferrer">{message}</a>
                 }
               /> : null

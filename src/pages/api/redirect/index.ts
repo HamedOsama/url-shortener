@@ -36,10 +36,5 @@ export default async function handler(
     return res.redirect(301, redirectUrl)
   } catch (e: any) {
     return res.redirect(301, '/')
-    // res.status(500).json({
-    //   ok: false,
-    //   status: 500,
-    //   message: e.message
-    // })
   }
 }
