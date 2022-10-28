@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import connect from '../../db/db';
-import { client, connectToRedis } from '../../db/redis';
 import Url from '../../models/url'
-
 
 
 export default async function handler(
@@ -11,36 +9,25 @@ export default async function handler(
   res: NextApiResponse
 ): Promise<void> {
   try {
-    if (req.method !== 'POST')
+    if (req.method !== 'GET')
       throw new Error(`cannot ${req.method}`)
     //connect to db
     await connect();
-    if (!client.isReady)
-      await connectToRedis();
-    // get URL from request
-    const link = req.body.url;
+    // get key from request
+    const key = req.body.key;
     // check if URL sent in request.
-    if (!link)
-      throw new Error('url field is required');
+    if (!key)
+      throw new Error('key field is required');
     //check if url is already found
-    const checkUrl = await Url.findOne({ url: link });
-    if (checkUrl)
+    const url = await Url.findOne({ key });
+    if (!url)
+      throw new Error('hash is not valid');
+    if (url)
       return res.status(200).json({
         ok: true,
         status: 200,
-        message: 'link already found',
-        url: checkUrl
+        url
       })
-    //create new shorten url
-    const url = new Url({ url: link });
-    await client.set(url.key, url.url);
-
-    await url.save();
-    res.status(201).json({
-      ok: true,
-      status: 201,
-      url
-    })
   } catch (e: any) {
     res.status(500).json({
       ok: false,

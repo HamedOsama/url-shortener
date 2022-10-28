@@ -5,7 +5,7 @@ import { Button, Layout, Input, Form, Typography, Alert, Skeleton } from 'antd'
 import { Content, Footer, Header } from 'antd/lib/layout/layout'
 import Space from 'antd/lib/space'
 import axios, { AxiosError } from 'axios'
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useState } from 'react'
@@ -142,3 +142,14 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export const getServerSideProps: GetServerSideProps = async (): Promise<any> => {
+  const localStorage = window.localStorage.getItem('hashes');
+  if (!localStorage)
+    return {
+      props: {
+        links: []
+      }
+    }
+
+}
