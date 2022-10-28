@@ -1,6 +1,8 @@
 import { Avatar, Skeleton, Space } from "antd"
 import { NextPage } from "next"
-import styled from "styled-components"
+import { useRouter } from "next/router"
+import styled, { withTheme } from "styled-components"
+import RoundedButton from "../UI/RoundedButton"
 import CustomImage from "./CustomImage"
 
 const Container = styled.div`
@@ -31,12 +33,14 @@ type urlData = {
   _id: string,
   key: string,
   url: string,
-  click: number,
+  clicks: number,
 }
 const CustomSkelton: NextPage = (props: any) => {
   console.log(props)
   const urlData = props.urlData as urlData;
-  console.log(`http://s2.googleusercontent.com/s2/favicons?domain_url=${urlData?.url}`)
+  const router = useRouter()
+  // console.log(window.location.hostname)
+
   return (
     <Container>
       <AvatarContainer>
@@ -54,16 +58,29 @@ const CustomSkelton: NextPage = (props: any) => {
       </AvatarContainer>
       <DataContainer>
         <FirstLevel>
-          <Skeleton.Button style={{ width: '150px' }} size="small" shape="round" />
-          <Skeleton.Button shape="circle" size="small" />
-          <Skeleton.Button shape="round" size="small" />
+          {
+            urlData?.key ?
+              <a href={`http://localhost:3000/${urlData?.key}`} target="_blank" rel="noreferrer">{urlData?.key}</a>
+              : <Skeleton.Button style={{ width: '150px' }} size="small" shape="round" />
+          }
+          {
+            urlData?._id ?
+              <RoundedButton>copy</RoundedButton> :
+              <Skeleton.Button shape="circle" size="small" />
+          }
+          {
+            urlData?.clicks > -1 ?
+              <RoundedButton>{urlData?.clicks} clicks</RoundedButton> :
+              <Skeleton.Button shape="round" size="small" />
+          }
         </FirstLevel>
         <SecondLevel>
           <Skeleton
             title={false}
             paragraph={{ rows: 1, width: '100%', }}
+            loading={!!!urlData?.url}
           >
-            <h2>hamed</h2>
+            <p style={{ color: "#777" }}>{urlData?.url}</p>
           </Skeleton>
 
         </SecondLevel>
