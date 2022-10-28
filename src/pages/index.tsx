@@ -9,6 +9,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useState } from 'react'
+import CustomSkelton from '../components/CustomSkeleton'
 import styles from '../styles/Home.module.css'
 
 const { Title } = Typography;
@@ -32,11 +33,28 @@ const Home: NextPage = () => {
     // console.log(form.getFieldError('url').join(' '))
   }
 
+  const addToLocalStorage = (url: string) => {
+    const oldData = window.localStorage.getItem('hashes')
+    const formattedUrl = {
+      hash: url
+    }
+    let newFormat = [];
+    if (oldData) {
+      newFormat = JSON.parse(oldData);
+      newFormat.push(formattedUrl);
+      window.localStorage.setItem('hashes', JSON.stringify(newFormat));
+    }
+    else {
+      newFormat.push(formattedUrl)
+      window.localStorage.setItem('hashes', JSON.stringify(newFormat));
+    }
+  }
   const submitHandler = async (Link: LinkType) => {
     try {
       const req = await axios.post('/api/addUrl', {
         ...Link
       })
+      addToLocalStorage(req?.data?.url?.key)
       setStatus(prev => 'success');
       setMessage(prev => 'http://localhost:3000/' + req?.data?.url?.key)
     } catch (e: any) {
@@ -102,20 +120,7 @@ const Home: NextPage = () => {
               </div>
             </div>
           </Form>
-          <div>
-            <Space>
-              <Skeleton.Avatar style={{ width: '50px', height: '50px' }} />
-              <Skeleton.Button style={{ width: '150px' }} />
-              <Skeleton.Button shape="circle" />
-              <Skeleton.Button />
-            </Space>
-            <Space style={{ display: 'block', margin: "1rem 0" }}>
-              <Skeleton
-                title={false}
-                paragraph={{ rows: 1 }}
-              />
-            </Space>
-          </div>
+          <CustomSkelton />
           {
             status === 'error' ||
               status === 'success' ?

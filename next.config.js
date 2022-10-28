@@ -5,6 +5,7 @@ const nextConfig = {
 }
 
 module.exports = {
+  compiler: { styledComponents: true },
   reactStrictMode: true,
   swcMinify: true,
   rewrites: async () => {
