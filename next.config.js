@@ -6,6 +6,16 @@ const nextConfig = {
 
 module.exports = {
   compiler: { styledComponents: true },
+  images: {
+    domains: [
+      "s2.googleusercontent.com",
+      "www.google.com",
+      "avatar.tobi.sh",
+      "faisalman.github.io",
+      "avatars.dicebear.com",
+      "res.cloudinary.com",
+    ],
+  },
   reactStrictMode: true,
   swcMinify: true,
   rewrites: async () => {

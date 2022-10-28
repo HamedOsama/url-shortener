@@ -1,7 +1,4 @@
 import { Button, Layout, Input, Form, Typography, Alert, Skeleton } from 'antd'
-// import Form from 'antd/lib/form'
-// import Input from 'antd/lib/input'
-// import {  } from 'antd'
 import { Content, Footer, Header } from 'antd/lib/layout/layout'
 import Space from 'antd/lib/space'
 import axios, { AxiosError } from 'axios'
@@ -12,6 +9,9 @@ import { useState } from 'react'
 import CustomSkelton from '../components/CustomSkeleton'
 import styles from '../styles/Home.module.css'
 
+import Cookies from 'js-cookie'
+import Url from '../models/url'
+import connect from '../db/db'
 const { Title } = Typography;
 type LinkType = {
   link: string,
@@ -21,20 +21,23 @@ type ResponseError = {
   status: number,
   message: string | any
 }
-const Home: NextPage = () => {
+const Home: NextPage = (props: any) => {
   const [status, setStatus] = useState<'error' | 'success' | 'initial'>('initial');
   const [message, setMessage] = useState<string>('');
   const [form] = Form.useForm();
   // const url = Form.useWatch('url', form);
 
+  const data = props.urls ? JSON.parse(props.urls) : [];
+  console.log(data)
   const handleWrongOnSubmit = () => {
     setStatus(prev => 'error');
     setMessage(prev => form.getFieldError('url').join(' '))
     // console.log(form.getFieldError('url').join(' '))
   }
 
-  const addToLocalStorage = (url: string) => {
-    const oldData = window.localStorage.getItem('hashes')
+  const addToCookies = (url: string) => {
+    const oldData = Cookies.get('hashes')
+    console.log(oldData)
     const formattedUrl = {
       hash: url
     }
@@ -42,11 +45,11 @@ const Home: NextPage = () => {
     if (oldData) {
       newFormat = JSON.parse(oldData);
       newFormat.push(formattedUrl);
-      window.localStorage.setItem('hashes', JSON.stringify(newFormat));
+      Cookies.set('hashes', JSON.stringify(newFormat), { expires: 365 });
     }
     else {
       newFormat.push(formattedUrl)
-      window.localStorage.setItem('hashes', JSON.stringify(newFormat));
+      Cookies.set('hashes', JSON.stringify(newFormat), { expires: 365 });
     }
   }
   const submitHandler = async (Link: LinkType) => {
@@ -54,7 +57,7 @@ const Home: NextPage = () => {
       const req = await axios.post('/api/addUrl', {
         ...Link
       })
-      addToLocalStorage(req?.data?.url?.key)
+      addToCookies(req?.data?.url?.key)
       setStatus(prev => 'success');
       setMessage(prev => 'http://localhost:3000/' + req?.data?.url?.key)
     } catch (e: any) {
@@ -120,7 +123,11 @@ const Home: NextPage = () => {
               </div>
             </div>
           </Form>
-          <CustomSkelton />
+          {
+            Array(4).fill(0).map((el, i) => (
+              <CustomSkelton key={i} urlData={data[i] ?? null} />
+            ))
+          }
           {
             status === 'error' ||
               status === 'success' ?
@@ -143,13 +150,24 @@ const Home: NextPage = () => {
 
 export default Home
 
-export const getServerSideProps: GetServerSideProps = async (): Promise<any> => {
-  const localStorage = window.localStorage.getItem('hashes');
-  if (!localStorage)
+export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
+  const cookies = context?.req?.cookies?.hashes as string
+  const hashes = cookies ? JSON.parse(cookies) : null;
+  if (!hashes)
     return {
       props: {
         links: []
       }
     }
-
+  await connect()
+  const data = [];
+  for (const el of hashes) {
+    const url = await Url.findOne({ key: el.hash }, { __v: 0 });
+    data.push(url);
+  }
+  return {
+    props: {
+      urls: JSON.stringify(data)
+    }
+  }
 }

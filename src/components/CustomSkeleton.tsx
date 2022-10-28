@@ -1,6 +1,7 @@
-import { Skeleton, Space } from "antd"
+import { Avatar, Skeleton, Space } from "antd"
 import { NextPage } from "next"
 import styled from "styled-components"
+import CustomImage from "./CustomImage"
 
 const Container = styled.div`
   display: flex;
@@ -26,11 +27,30 @@ const FirstLevel = styled.div`
 const SecondLevel = styled.div`
 width: 100%;
 `
-const CustomSkelton: NextPage = () => {
+type urlData = {
+  _id: string,
+  key: string,
+  url: string,
+  click: number,
+}
+const CustomSkelton: NextPage = (props: any) => {
+  console.log(props)
+  const urlData = props.urlData as urlData;
+  console.log(`http://s2.googleusercontent.com/s2/favicons?domain_url=${urlData?.url}`)
   return (
     <Container>
       <AvatarContainer>
-        <Skeleton.Avatar style={{ width: '45px', height: '45px' }} />
+        {
+          urlData?.url ?
+            <CustomImage
+              src={`http://s2.googleusercontent.com/s2/favicons?sz=64&domain_url=${urlData?.url}`}
+              width={45}
+              height={45}
+              alt="website"
+            />
+            :
+            < Skeleton.Avatar style={{ width: '45px', height: '45px' }} />
+        }
       </AvatarContainer>
       <DataContainer>
         <FirstLevel>

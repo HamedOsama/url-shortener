@@ -25,7 +25,7 @@ export default async function handler(
     //check if url is already found
     const checkUrl = await Url.findOne({ url: link });
     if (checkUrl)
-      return res.status(200).json({
+      return res.setHeader('Set-Cookie', `logged=${checkUrl.key}`).status(200).json({
         ok: true,
         status: 200,
         message: 'link already found',
