@@ -5,7 +5,7 @@ import styled from "styled-components";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 
-const Container = styled.span`
+const IconContainer = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,22 +31,23 @@ const Container = styled.span`
 `
 
 type propsType = {
-  link: string
+  link: string,
+  onClick?: object
 }
-const CopyLink: NextPage<propsType> = ({ link }) => {
+const CopyLink: NextPage<propsType> = ({ link, onClick }) => {
   const [isCopied, setIsCopied] = useState(false);
   const copyCodeHandler = async () => {
     await navigator.clipboard.writeText(`http://localhost:3000/${link}`);
     setIsCopied(prev => true)
     setTimeout(() => setIsCopied(prev => false), 1500)
   }
-  return (<Container onClick={copyCodeHandler}>
+  return (<IconContainer onClick={onClick}>
     {
       isCopied === false ?
         <ContentCopyIcon className="icon" /> :
         <DoneRoundedIcon className="icon" />
     }
-  </Container>
+  </IconContainer>
   )
 }
 

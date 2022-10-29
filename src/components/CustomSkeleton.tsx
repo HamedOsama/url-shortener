@@ -1,12 +1,14 @@
 import { Avatar, Skeleton, Space } from "antd"
 import { NextPage } from "next"
 import { useRouter } from "next/router"
+import { useState } from "react"
 import styled, { withTheme } from "styled-components"
 import Link from "../UI/Link"
 import OriginalLink from "../UI/OriginalLink"
 import RoundedButton from "../UI/RoundedButton"
 import CopyLink from "./CopyLink"
 import CustomImage from "./CustomImage"
+import QrCard from './QrCard'
 
 const Container = styled.div`
   display: flex;
@@ -40,13 +42,20 @@ type urlData = {
   clicks: number,
 }
 const CustomSkelton: NextPage = (props: any) => {
-  console.log(props)
+  const [qrMenu, setQrMenu] = useState(false);
+  console.log(qrMenu)
   const urlData = props.urlData as urlData;
   const router = useRouter()
-  // console.log(window.location.hostname)
 
+  const handleQrMenu = () => {
+    setQrMenu(prev => true);
+  }
   return (
     <Container>
+      {
+        qrMenu === true ?
+          <QrCard urlData={{ key: urlData.key, url: urlData.url }} /> : null
+      }
       <AvatarContainer>
         {
           urlData?.url ?
@@ -70,6 +79,11 @@ const CustomSkelton: NextPage = (props: any) => {
           {
             urlData?._id ?
               <CopyLink link={urlData.key} /> :
+              <Skeleton.Button shape="circle" size="small" />
+          }
+          {
+            urlData?._id ?
+              <CopyLink link={urlData.key} onClick={handleQrMenu} /> :
               <Skeleton.Button shape="circle" size="small" />
           }
           {
