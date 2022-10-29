@@ -1,7 +1,7 @@
 {
   "name": "url-shortener",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -24,8 +24,6 @@
     "mongoose": "^6.6.7",
     "nanoid": "^4.0.0",
     "next": "12.3.1",
-    "qrcode": "^1.5.1",
-    "qrcode.react": "^3.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "redis": "^4.3.1",
@@ -35,7 +33,6 @@
     "@types/js-cookie": "^3.0.2",
     "@types/material-ui": "^0.21.12",
     "@types/node": "18.11.4",
-    "@types/qrcode": "^1.5.0",
     "@types/react": "^18.0.24",
     "@types/react-dom": "18.0.6",
     "eslint": "8.26.0",
