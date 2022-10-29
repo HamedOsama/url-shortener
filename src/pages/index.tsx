@@ -24,11 +24,10 @@ type ResponseError = {
 const Home: NextPage = (props: any) => {
   const [status, setStatus] = useState<'error' | 'success' | 'initial'>('initial');
   const [message, setMessage] = useState<string>('');
+  const [data, setData] = useState(props.urls ? JSON.parse(props.urls) : [])
   const [form] = Form.useForm();
   // const url = Form.useWatch('url', form);
 
-  const data = props.urls ? JSON.parse(props.urls) : [];
-  console.log(data)
   const handleWrongOnSubmit = () => {
     setStatus(prev => 'error');
     setMessage(prev => form.getFieldError('url').join(' '))
@@ -58,6 +57,7 @@ const Home: NextPage = (props: any) => {
         ...Link
       })
       addToCookies(req?.data?.url?.key)
+      setData((prev: []) => [...prev, req?.data?.url])
       setStatus(prev => 'success');
       setMessage(prev => 'http://localhost:3000/' + req?.data?.url?.key)
     } catch (e: any) {

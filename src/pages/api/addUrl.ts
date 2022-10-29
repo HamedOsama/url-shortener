@@ -23,7 +23,7 @@ export default async function handler(
     if (!link)
       throw new Error('url field is required');
     //check if url is already found
-    const checkUrl = await Url.findOne({ url: link });
+    const checkUrl = await Url.findOne({ url: link }, { __v: 0 });
     if (checkUrl)
       return res.setHeader('Set-Cookie', `logged=${checkUrl.key}`).status(200).json({
         ok: true,

@@ -9,7 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/js-cookie": "^3.0.2",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.10.9",
+    "@mui/material": "^5.10.11",
+    "@types/styled-components": "^5.1.26",
     "antd": "^4.23.6",
     "axios": "^1.1.3",
     "babel-plugin-styled-components": "^2.0.7",
@@ -24,10 +28,11 @@
     "styled-components": "^5.3.6"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.2",
+    "@types/material-ui": "^0.21.12",
     "@types/node": "18.11.4",
-    "@types/react": "18.0.21",
+    "@types/react": "^18.0.24",
     "@types/react-dom": "18.0.6",
-    "@types/styled-components": "^5.1.26",
     "eslint": "8.26.0",
     "eslint-config-next": "12.3.1",
     "typescript": "4.8.4"

@@ -8,6 +8,10 @@ const RoundedButton = styled.button`
   border : none;
   outline: none;
   cursor: pointer;
+  transition: 0.1s ease;
+  &:hover{
+    transform: scale(1.05);
+  }
 `;
 
 export default RoundedButton;

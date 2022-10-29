@@ -2,7 +2,10 @@ import { Avatar, Skeleton, Space } from "antd"
 import { NextPage } from "next"
 import { useRouter } from "next/router"
 import styled, { withTheme } from "styled-components"
+import Link from "../UI/Link"
+import OriginalLink from "../UI/OriginalLink"
 import RoundedButton from "../UI/RoundedButton"
+import CopyLink from "./CopyLink"
 import CustomImage from "./CustomImage"
 
 const Container = styled.div`
@@ -11,6 +14,7 @@ const Container = styled.div`
   gap: 1rem;
   margin: 0.5rem 0;
   width: 100%;
+  /* cursor: grab; */
 `
 const AvatarContainer = styled.div`
   
@@ -23,7 +27,7 @@ const FirstLevel = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin: 0 0 1rem;
+  margin: 0 0 0.5rem;
 `
 
 const SecondLevel = styled.div`
@@ -60,12 +64,12 @@ const CustomSkelton: NextPage = (props: any) => {
         <FirstLevel>
           {
             urlData?.key ?
-              <a href={`http://localhost:3000/${urlData?.key}`} target="_blank" rel="noreferrer">{urlData?.key}</a>
+              <Link href={`http://localhost:3000/${urlData?.key}`} target="_blank" rel="noreferrer">localhost:3000/{urlData?.key}</Link>
               : <Skeleton.Button style={{ width: '150px' }} size="small" shape="round" />
           }
           {
             urlData?._id ?
-              <RoundedButton>copy</RoundedButton> :
+              <CopyLink link={urlData.key} /> :
               <Skeleton.Button shape="circle" size="small" />
           }
           {
@@ -80,7 +84,7 @@ const CustomSkelton: NextPage = (props: any) => {
             paragraph={{ rows: 1, width: '100%', }}
             loading={!!!urlData?.url}
           >
-            <p style={{ color: "#777" }}>{urlData?.url}</p>
+            <OriginalLink>{urlData?.url}</OriginalLink>
           </Skeleton>
 
         </SecondLevel>
