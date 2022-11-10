@@ -1,7 +1,9 @@
 .layout {
   height: 100vh;
 }
-
+.navbar{
+  z-index: 1000;
+}
 .logo {
   float: left;
   width: 150px;

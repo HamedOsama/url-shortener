@@ -7,12 +7,18 @@ import CustomImage from "./CustomImage"
 import SaveAltRoundedIcon from '@mui/icons-material/SaveAltRounded';
 
 const Container = styled.div`
+  position : absolute;
+  inset : 0;
+  backdrop-filter : blur(2px);
+  z-index: 99;
+  `
+const CardContainer = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
   z-index: 100;
-  background-color: red;
+  background-color: white;
   width: 450px;
   border-radius: 1rem;
 `
@@ -81,10 +87,11 @@ type propsType = {
   urlData: {
     key: string,
     url: string,
-  }
+  },
+  closeHandler : Function,
 }
 
-const QrCard: NextPage<propsType> = ({ urlData }) => {
+const QrCard: NextPage<propsType> = ({ urlData ,closeHandler}) => {
   const currentDomain = window?.location?.href
   const downloadRef = useRef<HTMLAnchorElement>(null);
 
@@ -111,7 +118,9 @@ const QrCard: NextPage<propsType> = ({ urlData }) => {
     downloadRef.current.click();
   }
   return (
-    <Container>
+    <>
+    <Container onClick={closeHandler} />
+    <CardContainer>
       <Header>
         <CustomImage
           src={`http://s2.googleusercontent.com/s2/favicons?sz=64&domain_url=${urlData?.url}`}
@@ -178,7 +187,9 @@ const QrCard: NextPage<propsType> = ({ urlData }) => {
           ref={downloadRef}
         />
       </Body>
-    </Container>
+    </CardContainer>
+    
+    </>
   )
 }
 
